@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: todo-api
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/todo-api
+    username: postgres
+    password: postgres
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+    show-sql: true
+
+# JAVA_HOME=$HOME/.sdkman/candidates/java/21.0.11-zulu PATH=$JAVA_HOME/bin:$PATH mvn clean instal
