@@ -2,6 +2,10 @@ spring:
   application:
     name: todo-api
 
+  web:
+    resources:
+      add-mappings: false
+
   datasource:
     url: jdbc:postgresql://localhost:5432/todo-api
     username: postgres
