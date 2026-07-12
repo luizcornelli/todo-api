@@ -12,11 +12,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.todo_api.dto.TaskRequest;
 import com.todo_api.dto.TaskResponse;
 import com.todo_api.entity.Task;
+import com.todo_api.entity.enums.Priority;
+import com.todo_api.entity.enums.Status;
 import com.todo_api.security.UserPrincipal;
 import com.todo_api.service.TaskService;
 
@@ -40,8 +43,10 @@ public class TaskController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TaskResponse>> findAll(@AuthenticationPrincipal UserPrincipal principal) {
-        List<TaskResponse> tasks = taskService.findAll(principal.getUser()).stream()
+    public ResponseEntity<List<TaskResponse>> findAll(@AuthenticationPrincipal UserPrincipal principal,
+                                                        @RequestParam(required = false) Status status,
+                                                        @RequestParam(required = false) Priority priority) {
+        List<TaskResponse> tasks = taskService.findAll(principal.getUser(), status, priority).stream()
                 .map(TaskResponse::fromEntity)
                 .toList();
         return ResponseEntity.ok(tasks);

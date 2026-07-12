@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import com.todo_api.dto.TaskRequest;
 import com.todo_api.entity.Task;
 import com.todo_api.entity.User;
+import com.todo_api.entity.enums.Priority;
+import com.todo_api.entity.enums.Status;
 import com.todo_api.exception.TaskNotFoundException;
 import com.todo_api.repository.TaskRepository;
 
@@ -26,8 +28,19 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-    public List<Task> findAll(User user) {
-        return taskRepository.findAllByUserId(user.getId());
+    public List<Task> findAll(User user, Status status, Priority priority) {
+        Long userId = user.getId();
+
+        if (status != null && priority != null) {
+            return taskRepository.findAllByUserIdAndStatusAndPriority(userId, status, priority);
+        }
+        if (status != null) {
+            return taskRepository.findAllByUserIdAndStatus(userId, status);
+        }
+        if (priority != null) {
+            return taskRepository.findAllByUserIdAndPriority(userId, priority);
+        }
+        return taskRepository.findAllByUserId(userId);
     }
 
     public Task findById(User user, Long id) {
