@@ -23,10 +23,14 @@ import com.todo_api.entity.enums.Status;
 import com.todo_api.security.UserPrincipal;
 import com.todo_api.service.TaskService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/tasks")
+@Tag(name = "Tasks", description = "CRUD operations for the authenticated user's tasks")
 public class TaskController {
 
     private final TaskService taskService;
@@ -36,6 +40,7 @@ public class TaskController {
     }
 
     @PostMapping
+    @Operation(summary = "Create task", description = "Creates a new task for the authenticated user.")
     public ResponseEntity<TaskResponse> create(@AuthenticationPrincipal UserPrincipal principal,
                                                 @Valid @RequestBody TaskRequest request) {
         Task task = taskService.create(principal.getUser(), request);
@@ -43,8 +48,11 @@ public class TaskController {
     }
 
     @GetMapping
+    @Operation(summary = "List tasks", description = "Lists the authenticated user's tasks, with optional filtering by status and/or priority.")
     public ResponseEntity<List<TaskResponse>> findAll(@AuthenticationPrincipal UserPrincipal principal,
+                                                        @Parameter(description = "Filters by task status")
                                                         @RequestParam(required = false) Status status,
+                                                        @Parameter(description = "Filters by task priority")
                                                         @RequestParam(required = false) Priority priority) {
         List<TaskResponse> tasks = taskService.findAll(principal.getUser(), status, priority).stream()
                 .map(TaskResponse::fromEntity)
@@ -53,6 +61,7 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get task by id", description = "Returns 404 if the task does not exist or does not belong to the authenticated user.")
     public ResponseEntity<TaskResponse> findById(@AuthenticationPrincipal UserPrincipal principal,
                                                   @PathVariable Long id) {
         Task task = taskService.findById(principal.getUser(), id);
@@ -60,6 +69,7 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Update task", description = "Replaces the task's data. Returns 404 if it does not belong to the authenticated user.")
     public ResponseEntity<TaskResponse> update(@AuthenticationPrincipal UserPrincipal principal,
                                                 @PathVariable Long id,
                                                 @Valid @RequestBody TaskRequest request) {
@@ -68,6 +78,7 @@ public class TaskController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete task", description = "Removes the task. Returns 404 if it does not belong to the authenticated user.")
     public ResponseEntity<Void> delete(@AuthenticationPrincipal UserPrincipal principal,
                                         @PathVariable Long id) {
         taskService.delete(principal.getUser(), id);
