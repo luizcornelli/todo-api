@@ -1,3 +1,3 @@
 # todo-api
 
-Gerenciador de Tarefas (To-Do API)
+Task Manager (To-Do API)
