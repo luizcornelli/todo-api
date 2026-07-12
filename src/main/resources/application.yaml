@@ -14,3 +14,4 @@ spring:
     show-sql: true
 
 # JAVA_HOME=$HOME/.sdkman/candidates/java/21.0.11-zulu PATH=$JAVA_HOME/bin:$PATH mvn clean instal
+# docker compose up -d
