@@ -22,5 +22,6 @@ security:
     secret-key: ${JWT_SECRET:dev-only-secret-key-change-me-please-32bytes-min}
     expiration-ms: 3600000
 
-# JAVA_HOME=$HOME/.sdkman/candidates/java/21.0.11-zulu PATH=$JAVA_HOME/bin:$PATH mvn clean instal
+# JAVA_HOME=$HOME/.sdkman/candidates/java/21.0.11-zulu PATH=$JAVA_HOME/bin:$PATH mvn clean install
 # docker compose up -d
+# docker build -t todo-api .

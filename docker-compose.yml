@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
 
   postgres:
@@ -13,3 +11,37 @@ services:
 
     ports:
       - "5432:5432"
+
+    # persiste os dados do Postgres fora do container
+    volumes:
+      - todo-api-db-data:/var/lib/postgresql/data
+
+    # api só sobe depois que isto reportar "healthy"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d todo-api"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    image: todo-api
+    container_name: todo-api
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/todo-api
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      JWT_SECRET: ${JWT_SECRET:-dev-only-secret-key-change-me-please-32bytes-min}
+
+    ports:
+      - "${API_PORT:-8080}:8080"
+
+
+# volume nomeado usado acima
+volumes:
+  todo-api-db-data:
