@@ -15,8 +15,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private static final String[] PUBLIC_ROUTES = {
-            "/auth/register",
-            "/auth/login",
+            "/api/auth/register",
+            "/api/auth/login",
             "/swagger-ui.html",
             "/swagger-ui/**",
             "/v3/api-docs/**",

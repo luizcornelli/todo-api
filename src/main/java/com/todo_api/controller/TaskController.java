@@ -29,7 +29,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/tasks")
+@RequestMapping("/api/tasks")
 @Tag(name = "Tasks", description = "CRUD operations for the authenticated user's tasks")
 public class TaskController {
 
