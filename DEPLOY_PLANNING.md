@@ -2,58 +2,58 @@
 
 ## Branch
 
-`main` é a branch principal do projeto. Todo deploy deve partir dela.
+`main` is the project's primary branch. Every deploy should be based on it.
 
-## Pré-requisitos
+## Prerequisites
 
-- Docker `28.3.1` e Docker Compose `v2.36.2`
-- JDK `21` e Maven (só para gerar o `.jar`; pode usar o wrapper `./mvnw`)
+- Docker `28.3.1` and Docker Compose `v2.36.2`
+- JDK `21` and Maven (only needed to build the `.jar`; you can use the `./mvnw` wrapper)
 
-## Versões utilizadas
+## Versions used
 
-| Componente       | Versão                          |
-|------------------|----------------------------------|
-| Java             | `21` (imagem `eclipse-temurin:21-jdk`) |
-| PostgreSQL       | `16` (imagem `postgres:16`)      |
-| Docker           | `28.3.1`                         |
-| Docker Compose   | `v2.36.2`                        |
+| Component        | Version                                |
+|-------------------|-----------------------------------------|
+| Java              | `21` (`eclipse-temurin:21-jdk` image)   |
+| PostgreSQL        | `16` (`postgres:16` image)              |
+| Docker            | `28.3.1`                                |
+| Docker Compose    | `v2.36.2`                               |
 
-## Passo a passo
+## Steps
 
-1. Gerar o jar da aplicação (o `Dockerfile` copia um jar já compilado, não builda o projeto):
+1. Build the application jar (the `Dockerfile` copies a pre-built jar, it does not build the project):
    ```bash
    ./mvnw clean package -DskipTests
    ```
 
-2. Buildar as imagens e subir os containers (Postgres + API):
+2. Build the images and start the containers (Postgres + API):
    ```bash
    docker compose up -d --build
    ```
 
-   Isso sobe dois containers:
-   - `todo-api-db` (Postgres 16, porta `5432`, dados persistidos no volume `todo-api-db-data`)
-   - `todo-api` (a API, porta `8080` por padrão) — só inicia depois que o Postgres reportar `healthy`
+   This starts two containers:
+   - `todo-api-db` (Postgres 16, port `5432`, data persisted in the `todo-api-db-data` volume)
+   - `todo-api` (the API, port `8080` by default) — only starts once Postgres reports `healthy`
 
-3. Verificar que subiu:
+3. Verify it's up:
    ```bash
    curl http://localhost:8080/swagger-ui.html
    ```
 
-## Variáveis de ambiente
+## Environment variables
 
-| Variável      | Padrão (dev)                                          | Observação                                  |
-|---------------|--------------------------------------------------------|----------------------------------------------|
-| `JWT_SECRET`  | `dev-only-secret-key-change-me-please-32bytes-min`      | **Trocar em produção.** Mínimo 32 bytes.     |
-| `API_PORT`    | `8080`                                                  | Porta exposta no host para a API.            |
+| Variable      | Default (dev)                                           | Note                                        |
+|---------------|-----------------------------------------------------------|-----------------------------------------------|
+| `JWT_SECRET`  | `dev-only-secret-key-change-me-please-32bytes-min`         | **Replace it in production.** Minimum 32 bytes. |
+| `API_PORT`    | `8080`                                                     | Host port the API is exposed on.              |
 
-Exemplo de sobrescrita:
+Override example:
 ```bash
-JWT_SECRET=um-segredo-forte-de-producao-com-32-bytes-ou-mais API_PORT=8080 docker compose up -d --build
+JWT_SECRET=a-strong-production-secret-with-32-bytes-or-more API_PORT=8080 docker compose up -d --build
 ```
 
-## Parar os containers
+## Stopping the containers
 
 ```bash
-docker compose down       # mantém os dados do Postgres (volume)
-docker compose down -v    # remove também o volume (apaga os dados)
+docker compose down       # keeps Postgres data (volume)
+docker compose down -v    # also removes the volume (deletes the data)
 ```
